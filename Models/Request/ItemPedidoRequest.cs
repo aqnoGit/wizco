@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace GerenciadorDePedidos.Models
+namespace GerenciadorDePedidos.Models.DTO
 {
-    public class ItemPedido
+    public class ItemPedidoRequest
     {
-        public Guid Id { get; set; }
         public string? ProdutoNome { get; set; }
         public int Quantidade { get; set; }
         public int PrecoUnitario { get; set; }
-        public Guid PedidoId { get; set; } 
-        [JsonIgnore]
-        public Pedido? Pedido { get; set; }
     }
 }

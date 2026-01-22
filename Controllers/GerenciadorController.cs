@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GerenciadorDePedidos.Data;
 using GerenciadorDePedidos.Models;
+using GerenciadorDePedidos.Models.DTO;
 using GerenciadorDePedidos.Repository;
 using GerenciadorDePedidos.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,12 @@ namespace GerenciadorDePedidos.Controllers
         }
 
         [HttpPost("adicionar")]
-        public async Task<IActionResult> AdicionarPedidos(Pedido pedido)
+        public async Task<IActionResult> AdicionarPedidos(PedidoRequest request)
         {
             try { 
-                var novoPedido = await _gerenciadorDePedidosService.FazerPedido(pedido); 
-                return CreatedAtAction(nameof(ObterPedido), new { id = novoPedido.Id }, novoPedido); 
+                var response = await _gerenciadorDePedidosService.FazerPedido(request);
+                Response.Headers.Add("X-Mensagem", "Pedido realizado com sucesso!"); 
+                return CreatedAtAction(nameof(ObterPedido), new { id = response.Id }, response); 
             } 
             catch (Exception ex) 
             { 
@@ -40,27 +42,45 @@ namespace GerenciadorDePedidos.Controllers
         [HttpGet("consultarPorId/{id}")] 
         public async Task<IActionResult> ObterPedido(Guid id) 
         { 
-            var pedido = await _gerenciadorDePedidos.ConsultarPorId(id); 
-            if (pedido == null)
+            var response = await _gerenciadorDePedidos.ConsultarPorId(id); 
+            if (response == null)
             {
-               return NotFound(); 
+               return NoContent(); 
             }  
-            return Ok(pedido); 
+            return Ok(response); 
         }
 
         [HttpGet("consultarPorStatus")] 
         public async Task<IActionResult> ObterPorStatus([FromQuery] Status? status) 
         { 
-            var pedidos = await _gerenciadorDePedidos.ConsultarPorStatus(status); 
-            return Ok(pedidos); 
+            var response = await _gerenciadorDePedidos.ConsultarPorStatus(status); 
+            if (response == null)
+            {
+               return NoContent(); 
+            }
+            return Ok(response); 
+        }
+
+        [HttpPut("atualizar/{id}")] 
+        public async Task<IActionResult> AtualizarPedido(Guid id, PedidoRequest request) 
+        { 
+            try { 
+                var response = await _gerenciadorDePedidosService.AtualizarPedido(id, request); 
+                if (response == null) { 
+                    return NotFound("Pedido não encontrado."); 
+                } 
+                return Ok(new{Mensagem = "Pedido atualizado com sucesso!", PedidoResponse = response}); 
+            } catch (Exception ex) { 
+                return BadRequest(ex.Message); 
+            } 
         }
 
         [HttpPut("cancelar/{id}")] 
         public async Task<IActionResult> CancelarPedido(Guid id) 
         { 
             try { 
-                var pedido = await _gerenciadorDePedidosService.CancelarPedido(id); 
-                return Ok(pedido); 
+                var response = await _gerenciadorDePedidosService.CancelarPedido(id); 
+                return Ok(new{Mensagem = "Pedido cancelado com sucesso!", PedidoResponse = response}); 
             } catch (Exception ex) 
             { 
                 return BadRequest(ex.Message); 

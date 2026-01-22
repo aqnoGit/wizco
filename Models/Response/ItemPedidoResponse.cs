@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace GerenciadorDePedidos.Models
 {
-    public class ItemPedido
+    public class ItemPedidoResponse
     {
         public Guid Id { get; set; }
         public string? ProdutoNome { get; set; }
         public int Quantidade { get; set; }
         public int PrecoUnitario { get; set; }
         public Guid PedidoId { get; set; } 
-        [JsonIgnore]
-        public Pedido? Pedido { get; set; }
+
     }
 }
