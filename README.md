@@ -1,5 +1,4 @@
 # wizco GerenciadorDePedidos API
-Desafio técnico .Net
 
 API desenvolvida em .NET 8 para gerenciamento de pedidos. 
 Utiliza Entity Framework Core com MySQL para persistência.
